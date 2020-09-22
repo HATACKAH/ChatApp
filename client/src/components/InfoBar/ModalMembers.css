@@ -1,0 +1,22 @@
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: black;
+    display: flex;
+    justify-content: center;
+    padding-top: 5rem;
+}
+.modal-body {
+    width: 200px;
+    border-radius: 5px;
+    background: whitesmoke;
+    height: 200px;
+    min-height: 200px;
+    color: red;
+}
+.modal-body button {
+    background-color: brown;
+}
