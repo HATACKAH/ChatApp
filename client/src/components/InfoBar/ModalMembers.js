@@ -13,7 +13,7 @@ export default class ModalMembers extends React.Component {
           let numberOfUsers = users.length;
           return (
             <React.Fragment>
-              <div onClick={() => this.setState({ isOpen: true })}>
+              <div onClick={() => this.setState({ isOpen: true })} className='numberOfUsers'>
                 <h3>{numberOfUsers} members</h3>
               </div>
       
@@ -29,7 +29,9 @@ export default class ModalMembers extends React.Component {
                         </div>
                       ))}
                     </div>
-                    <button onClick={() => this.setState({ isOpen: false })}>
+                    <button 
+                      onClick={() => this.setState({ isOpen: false })}
+                      onKeyPress={event => event.key === 'Escape' ? this.setState({ isOpen: false }) : null}>
                       Close
                     </button>
                   </div>
