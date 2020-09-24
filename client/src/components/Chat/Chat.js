@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import queryString from 'query-string';
+import { connect, useSelector } from 'react-redux';
 import io from "socket.io-client";
 
 import Messages from '../Messages/Messages';
@@ -9,66 +10,93 @@ import TopicsWindow from '../TopicsWindow/TopicsWindow'
 
 import Paper from '@material-ui/core/Paper';
 
+import {
+    setRoom,
+    setName,
+    addMessage,
+    roomUsersUpdated,
+} from '../../store/actions';
+
 import './Chat.css';
 
 const ENDPOINT = 'localhost:5000';
 
 let socket;
 
-const Chat = ({ location }) => {
-  const [name, setName] = useState('');
-  const [room, setRoom] = useState('');
-  const [users, setUsers] = useState('');
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+const ChatComponent = ({
+    location,
+    setRoom,
+    setName,
+    addMessage,
+    roomUsersUpdated,
+}) => {
+    const userName = useSelector(s => s.userName);
+    const rooms = useSelector(s => Object.keys(s.rooms));
+    console.log('все румы', rooms);
 
-  useEffect(() => {
-    const { name, room } = queryString.parse(location.search);
+    const currentRoom = useSelector(s => s.currentRoom);
+    const users = useSelector(s => s.currentRoom && s.rooms[s.currentRoom] && s.rooms[s.currentRoom].users || []);
+    const messages = useSelector(s => s.currentRoom && s.rooms[s.currentRoom] && s.rooms[s.currentRoom].messages || []);
 
-    socket = io(ENDPOINT);
+    const [messageInputText, setMessageInputText] = useState('');
 
-    setRoom(room);
-    setName(name)
+    useEffect(() => {
+        const { name, room } = queryString.parse(location.search);
 
-    socket.emit('join', { name, room }, (error) => {
-      if(error) {
-        alert(error);
-      }
-    });
-  }, [ENDPOINT, location.search]);
+        socket = io(ENDPOINT);
 
-  useEffect(() => {
-    socket.on('message', message => {
-      setMessages(messages => [ ...messages, message ]);
-    });
+        setRoom(room);
+        setName(name);
 
-    socket.on("roomData", ({ users }) => {
-      setUsers(users);
-    });
-}, []);
+        socket.on("roomData", ({ room, users }) => {
+            console.log('roomdata', users)
+            roomUsersUpdated(room, users);
+        });
 
-  const sendMessage = e => {
-    e.preventDefault();
+        socket.on('message', ({ user, text, room }) => {
+            addMessage(user, text, room);
+        });
 
-    if (message) {
-      socket.emit('sendMessage', message, () => setMessage(''));
+        socket.emit('join', { name, room }, (error) => {
+            if (error) {
+                alert(error);
+            }
+        });
+
+    }, [ENDPOINT, location.search]);
+
+    const sendMessage = e => {
+        e.preventDefault();
+
+        if (messageInputText) {
+            socket.emit('sendMessage', messageInputText, () => setMessageInputText(''));
+        }
     }
-  }
 
-  return (
-    <div className="outerContainer">
-      <div className="container">
-            <Paper className='topicsWindow'>
-              <TopicsWindow/>
-            </Paper>
-        <div className='chatbox-wrapper'>
-          <InfoBar room={room} users={users} />
-          <Messages messages={messages} name={name} />
-          <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+    return (
+        <div className="outerContainer">
+            <div className="container">
+                <Paper className='topicsWindow'>
+                    <TopicsWindow rooms={rooms} />
+                </Paper>
+                <div className='chatbox-wrapper'>
+                    <InfoBar room={currentRoom} users={users} />
+                    <Messages messages={messages} currentUserName={userName} />
+                    <Input message={messageInputText} setText={setMessageInputText} sendMessage={sendMessage} />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
-export default Chat;
+const mapDispatchToProps = {
+    setRoom,
+    setName,
+    addMessage,
+    roomUsersUpdated,
+};
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(ChatComponent);

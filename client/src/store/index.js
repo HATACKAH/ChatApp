@@ -2,27 +2,29 @@ import { createStore } from "redux";
 import * as ActionTypes from "./actions/ActionTypes";
 
 const initialState = {
-    room1: {
-        messages: [],
-        users: [ 1, 10, ],
-    },
+    userName: null,
+    currentRoom: null,
+    rooms: {},
 };
 
-const initRoom = (s, room) =>
-        s[room] = s[room]
-                ? { ...s[room] }
-                : { messages: [], users: [] };
+const initRoom = (s, room) => {
+    s.rooms[room] = s.rooms[room]
+        ? { ...s.rooms[room] }
+        : { messages: [], users: [] };
+
+    return s.rooms[room];
+}
 
 function rootReducer(state = initialState, action) {
     switch (action.type) {
         case ActionTypes.ADD_MESSAGE: {
             const s = { ...state };
-            const { room, userId, message } = action;
+            const { room, userName, message } = action;
 
-            initRoom(s, room);
+            const r = initRoom(s, room);
 
-            s[room].messages.push({
-                userId,
+            r.messages.push({
+                userName,
                 message,
             });
 
@@ -33,11 +35,25 @@ function rootReducer(state = initialState, action) {
             const s = { ...state };
             const { room, users } = action;
 
-            initRoom(s, room);
+            const r = initRoom(s, room);
+            r.users = users && [...users] || [];
 
-            s[room].users = [ ...users ];
-
+            console.log('room data', r, s);
             return s;
+        }
+
+        case ActionTypes.SET_ROOM: {
+            return {
+                ...state,
+                currentRoom: action.room,
+            }
+        }
+
+        case ActionTypes.SET_NAME: {
+            return {
+                ...state,
+                userName: action.userName,
+            }
         }
 
         default:

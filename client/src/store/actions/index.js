@@ -1,9 +1,8 @@
 import * as types from './ActionTypes'
 
-export const addMessage = (userId, message, room) => ({
+export const addMessage = (userName, message, room) => ({
     type: types.ADD_MESSAGE,
-    id: nextMessageId++,
-    userId,
+    userName,
     room,
     message,
 })
@@ -14,3 +13,12 @@ export const roomUsersUpdated = (room, users) => ({
     users,
 })
 
+export const setName = userName => ({
+    type: types.SET_NAME,
+    userName,
+})
+
+export const setRoom = room => ({
+    type: types.SET_ROOM,
+    room,
+})
