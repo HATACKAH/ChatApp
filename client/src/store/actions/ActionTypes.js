@@ -1,0 +1,2 @@
+export const ADD_MESSAGE = 'ADD_MESSAGE'
+export const ROOM_USERS_UPDATED = 'ROOM_USERS_UPDATED'
