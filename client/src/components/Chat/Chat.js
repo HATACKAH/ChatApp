@@ -32,7 +32,7 @@ const ChatComponent = ({
 }) => {
     const userName = useSelector(s => s.userName);
     const rooms = useSelector(s => Object.keys(s.rooms));
-    console.log('все румы', rooms);
+
 
     const currentRoom = useSelector(s => s.currentRoom);
     const users = useSelector(s => s.currentRoom && s.rooms[s.currentRoom] && s.rooms[s.currentRoom].users || []);
@@ -77,7 +77,7 @@ const ChatComponent = ({
         <div className="outerContainer">
             <div className="container">
                 <Paper className='topicsWindow'>
-                    <TopicsWindow rooms={rooms} />
+                    <TopicsWindow rooms={rooms} currentUserName={userName}/>
                 </Paper>
                 <div className='chatbox-wrapper'>
                     <InfoBar room={currentRoom} users={users} />
