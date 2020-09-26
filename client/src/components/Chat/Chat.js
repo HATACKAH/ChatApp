@@ -41,7 +41,12 @@ const ChatComponent = ({
     const [messageInputText, setMessageInputText] = useState('');
 
     useEffect(() => {
-        const { name, room } = queryString.parse(location.search);
+        // const { name, room } = queryString.parse(location.search);
+        const query = queryString.parse(location.search);
+        const room = currentRoom || query.room;
+        const name = userName || query.name;
+        console.log(name)
+        console.log(room)
 
         socket = io(ENDPOINT);
 
@@ -63,7 +68,7 @@ const ChatComponent = ({
             }
         });
 
-    }, [ENDPOINT, location.search]);
+    }, [ENDPOINT, location.search, currentRoom]);
 
     const sendMessage = e => {
         e.preventDefault();
