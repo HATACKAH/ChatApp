@@ -22,6 +22,7 @@ import './Chat.css';
 const ENDPOINT = 'localhost:5000';
 
 let socket;
+const joinedRooms = [];
 
 const ChatComponent = ({
     location,

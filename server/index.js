@@ -9,7 +9,7 @@ const router = require('./router');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+const io = socketio(server, { transports: ['polling'], allowUpgrades: false });
 
 app.use(cors());
 app.use(router);
@@ -47,8 +47,8 @@ io.on('connect', socket => {
 
         io.to(user.room).emit('message', {
             user: user.name,
-            text: message,
-            room: user.room
+            text: message.text,
+            room: message.room,
         });
 
         callback();

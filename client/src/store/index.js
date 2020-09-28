@@ -36,17 +36,22 @@ function rootReducer(state = initialState, action) {
             const { room, users } = action;
 
             const r = initRoom(s, room);
+
+            // eslint-disable-next-line
             r.users = users && [...users] || [];
 
-            console.log('room data', r, s);
             return s;
         }
 
         case ActionTypes.SET_ROOM: {
-            return {
+            const s = {
                 ...state,
                 currentRoom: action.room,
-            }
+            };
+
+            initRoom(s, action.room);
+
+            return s;
         }
 
         case ActionTypes.SET_NAME: {
