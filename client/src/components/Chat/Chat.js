@@ -42,40 +42,58 @@ const ChatComponent = ({
     const [messageInputText, setMessageInputText] = useState('');
 
     useEffect(() => {
-        // const { name, room } = queryString.parse(location.search);
+
         const query = queryString.parse(location.search);
-        const room = currentRoom || query.room;
-        const name = userName || query.name;
-        console.log(name)
-        console.log(room)
+        // const room = currentRoom || query.room;
+        // const name = userName || query.name;
+        // console.log(name)
+        // console.log(room)
 
-        socket = io(ENDPOINT);
+        let room, name;
+        if (currentRoom) {
+            room=currentRoom
+        } else if (query.room) {
+            room = query.room;
+            setRoom(room);
+        }
 
-        setRoom(room);
-        setName(name);
+        if (userName) {
+            name = userName;
+        } else if (query.name) {
+            name = query.name;
+            setName(name);
+        }
 
-        socket.on("roomData", ({ room, users }) => {
-            console.log('roomdata', users)
-            roomUsersUpdated(room, users);
-        });
+        if (!joinedRooms.length) {
+               socket = io(ENDPOINT);
 
-        socket.on('message', ({ user, text, room }) => {
-            addMessage(user, text, room);
-        });
+               socket.on("roomData", ({ room, users }) => {
+                roomUsersUpdated(room, users);
 
-        socket.emit('join', { name, room }, (error) => {
-            if (error) {
-                alert(error);
-            }
-        });
+                socket.on('message', ({ user, text, room }) => {
+                    addMessage(user, text, room);
+                });
+           });
 
-    }, [ENDPOINT, location.search, currentRoom]);
+        }
+
+        if (!joinedRooms.includes(room)) {
+            socket.emit('join', { name, room }, error => {
+                if (error) {
+                    alert(error);
+                }
+            });
+
+            joinedRooms.push(room);
+         }
+
+    }, [location.search, currentRoom, userName]);
 
     const sendMessage = e => {
         e.preventDefault();
 
         if (messageInputText) {
-            socket.emit('sendMessage', messageInputText, () => setMessageInputText(''));
+            socket.emit('sendMessage', { room: currentRoom, text: messageInputText }, () => setMessageInputText(''));
         }
     }
 
