@@ -12,7 +12,7 @@ export default function InfoBar({ room, users }) {
                 <img className="onlineIcon" src={onlineIcon} alt="online icon" />
                 <h3>{room}</h3>
             </div>
-            <div className='centerInnerContainer'>
+            <div className='rightInnerContainer'>
                 <ModalMembers users={users} />
             </div>
         </div>
