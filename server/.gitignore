@@ -1,2 +1,5 @@
 /node_modules
-/videoroom/node_modules
+/videoroom
+/netlify
+.DS_Store
+

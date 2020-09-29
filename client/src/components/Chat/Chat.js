@@ -19,7 +19,7 @@ import {
 
 import "./Chat.css";
 
-const ENDPOINT = "localhost:5000";
+const ENDPOINT = "https://rr-chat-app.herokuapp.com/";
 
 let socket;
 const joinedRooms = [];
