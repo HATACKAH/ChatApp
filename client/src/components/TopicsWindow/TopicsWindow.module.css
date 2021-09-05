@@ -1,0 +1,12 @@
+.topicWrapper {
+    width: 100%;
+    max-width: 360px;
+}
+.topicAddBox {
+    margin-left: 10px;
+}
+.addBtn {
+    margin-top: 10px;
+    width: 100px;
+
+}

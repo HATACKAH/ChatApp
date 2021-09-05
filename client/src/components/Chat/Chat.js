@@ -17,7 +17,7 @@ import {
   roomUsersUpdated
 } from "../../store/actions";
 
-import "./Chat.css";
+import styles from "./Chat.module.css";
 
 const ENDPOINT = "http://localhost:5000/";
 
@@ -106,12 +106,12 @@ const ChatComponent = ({
   };
 
   return (
-    <div className="outerContainer">
-      <div className="container">
-        <Paper className="topicsWindow">
+  <div className={styles.outerContainer}>
+      <div className={styles.container}>
+        <Paper className={styles.topicsWindow}>
           <TopicsWindow rooms={rooms} currentUserName={userName} />
         </Paper>
-        <div className="chatbox-wrapper">
+      <div className={styles.chatboxWrapper}>
           <InfoBar room={currentRoom} users={users} />
           <Messages messages={messages} currentUserName={userName} />
           <Input
